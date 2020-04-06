@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tutorial_coach_mark/light_paint.dart';
@@ -53,19 +52,22 @@ class _AnimatedFocusLightState extends State<AnimatedFocusLight>
   bool initReverse = false;
   double progressAnimated = 0;
 
+  bool goingForward = true;
+
   @override
   void initState() {
     _controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 600));
+        AnimationController(vsync: this, duration: Duration(milliseconds: 400));
     _controller
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           setState(() {
             finishFocus = true;
           });
-          widget?.focus(widget.targets[currentFocus]);
-
-          _controllerPulse.forward();
+          if (currentFocus >= 0) {
+            widget?.focus(widget.targets[currentFocus]);
+            _controllerPulse.forward();
+          }
         }
         if (status == AnimationStatus.dismissed) {
           setState(() {
@@ -83,7 +85,7 @@ class _AnimatedFocusLightState extends State<AnimatedFocusLight>
     _curvedAnimation = CurvedAnimation(parent: _controller, curve: Curves.ease);
 
     _controllerPulse =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+        AnimationController(vsync: this, duration: Duration(milliseconds: 600));
     _controllerPulse.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _controllerPulse.reverse();
@@ -106,10 +108,12 @@ class _AnimatedFocusLightState extends State<AnimatedFocusLight>
 
     WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
     widget.streamTap.listen((_) {
-      _tapHandler();
+      // _tapHandler();
     });
     super.initState();
   }
+
+  TextStyle navigationStyle = TextStyle(color: Colors.white, fontSize: 16);
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +121,7 @@ class _AnimatedFocusLightState extends State<AnimatedFocusLight>
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          _tapHandler();
+          // _tapHandler();
         },
         child: AnimatedBuilder(
             animation: _controller,
@@ -129,31 +133,84 @@ class _AnimatedFocusLightState extends State<AnimatedFocusLight>
                   if (finishFocus) {
                     progressAnimated = tweenPulse.value;
                   }
-                  return Container(
-                    width: double.maxFinite,
-                    height: double.maxFinite,
-                    child: currentFocus != -1
-                        ? CustomPaint(
-                            painter: widget?.targets[currentFocus]?.shape ==
-                                    ShapeLightFocus.RRect
-                                ? LightPaintRect(
-                                    colorShadow: widget.colorShadow,
-                                    positioned: positioned,
-                                    progress: progressAnimated,
-                                    offset: widget.paddingFocus,
-                                    target: targetPosition,
-                                    radius: 15,
-                                    opacityShadow: widget.opacityShadow,
-                                  )
-                                : LightPaint(
-                                    progressAnimated,
-                                    positioned,
-                                    sizeCircle,
-                                    colorShadow: widget.colorShadow,
-                                    opacityShadow: widget.opacityShadow,
-                                  ),
+                  return Stack(
+                    children: <Widget>[
+                      Container(
+                        width: double.maxFinite,
+                        height: double.maxFinite,
+                        child: currentFocus != -1
+                            ? CustomPaint(
+                          painter: widget?.targets[currentFocus]?.shape ==
+                              ShapeLightFocus.RRect
+                              ? LightPaintRect(
+                            colorShadow: widget.colorShadow,
+                            positioned: positioned,
+                            progress: progressAnimated,
+                            offset: widget.paddingFocus,
+                            target: targetPosition,
+                            radius: 15,
+                            opacityShadow: widget.opacityShadow,
                           )
-                        : Container(),
+                              : LightPaint(
+                            progressAnimated,
+                            positioned,
+                            sizeCircle,
+                            colorShadow: widget.colorShadow,
+                            opacityShadow: widget.opacityShadow,
+                          ),
+                        )
+                            : Container(),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: InkWell(
+                          onTap: () {
+                            goingForward = true;
+                            _tapHandler();
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Text(
+                              currentFocus == widget.targets.length - 1
+                                  ? "Finish"
+                                  : "Next",
+                              style: navigationStyle,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Padding(
+                              padding: const EdgeInsets.all(28.0),
+                              child: Text(
+                                  "(" +
+                                      (currentFocus + 1).toString() +
+                                      "/" +
+                                      widget.targets.length.toString() +
+                                      ")",
+                                  style:  TextStyle(color: Colors.white, fontSize: 22)))),
+                      currentFocus > 0
+                          ? Align(
+                        alignment: Alignment.bottomLeft,
+                        child: InkWell(
+                          onTap: () {
+                            print("previous");
+                            // _tapHandlerPrevious();
+                            goingForward = false;
+                            _tapHandler();
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Text(
+                              "Previous",
+                              style: navigationStyle,
+                            ),
+                          ),
+                        ),
+                      )
+                          : Container()
+                    ],
                   );
                 },
               );
@@ -163,25 +220,31 @@ class _AnimatedFocusLightState extends State<AnimatedFocusLight>
   }
 
   void _tapHandler() {
-    setState(() {
-      initReverse = true;
-      _controllerPulse.reverse(from: _controllerPulse.value);
-    });
-    if (currentFocus > -1) {
-      widget?.clickTarget(widget.targets[currentFocus]);
+    if (currentFocus > -1 && initReverse == false && finishFocus == true) {
+      setState(() {
+        initReverse = true;
+        _controllerPulse.reverse(from: _controllerPulse.value);
+      });
+      if (currentFocus > -1) {
+        widget?.clickTarget(widget.targets[currentFocus]);
+      }
     }
   }
 
   void _nextFocus() {
-    if (currentFocus >= widget.targets.length - 1) {
+    if (currentFocus >= widget.targets.length - 1 && goingForward == true) {
       this._finish();
       return;
     }
 
-    currentFocus++;
+    if (goingForward == true) {
+      currentFocus++;
+    } else {
+      currentFocus--;
+    }
 
     var targetPosition = getTargetCurrent(widget.targets[currentFocus]);
-    if (targetPosition == null) {
+    if (targetPosition == null && goingForward == true) {
       this._finish();
       return;
     }
