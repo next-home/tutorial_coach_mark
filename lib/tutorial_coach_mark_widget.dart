@@ -26,7 +26,7 @@ class TutorialCoachMarkWidget extends StatefulWidget {
       this.finish,
       this.paddingFocus = 10,
       this.clickTarget,
-      this.alignSkip = Alignment.bottomRight,
+      this.alignSkip = Alignment.topRight,
       this.textSkip = "SKIP",
       this.clickSkip,
       this.colorShadow = Colors.black,

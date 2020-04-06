@@ -30,7 +30,7 @@ class TutorialCoachMark {
     this.finish,
     this.paddingFocus = 10,
     this.clickSkip,
-    this.alignSkip = Alignment.bottomRight,
+    this.alignSkip = Alignment.topRight,
     this.textSkip = "SKIP",
     this.textStyleSkip = const TextStyle(color: Colors.white),
     this.hideSkip = false,
