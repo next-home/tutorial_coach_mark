@@ -12,7 +12,7 @@ enum ShapeLightFocus { Circle, RRect }
 class AnimatedFocusLight extends StatefulWidget {
   final List<TargetFocus> targets;
   final Function(TargetFocus) focus;
-  final Function(TargetFocus) clickTarget;
+  final Function(TargetFocus target, bool goingForward) clickTarget;
   final Function removeFocus;
   final Function() finish;
   final double paddingFocus;
@@ -226,7 +226,7 @@ class _AnimatedFocusLightState extends State<AnimatedFocusLight>
         _controllerPulse.reverse(from: _controllerPulse.value);
       });
       if (currentFocus > -1) {
-        widget?.clickTarget(widget.targets[currentFocus]);
+        widget?.clickTarget(widget.targets[currentFocus], goingForward);
       }
     }
   }

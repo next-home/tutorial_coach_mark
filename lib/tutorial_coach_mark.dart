@@ -9,7 +9,7 @@ export 'package:tutorial_coach_mark/target_focus.dart';
 class TutorialCoachMark {
   final BuildContext _context;
   final List<TargetFocus> targets;
-  final Function(TargetFocus) clickTarget;
+  final Function(TargetFocus target, bool goingForward) clickTarget;
   final Function() finish;
   final double paddingFocus;
   final Function() clickSkip;

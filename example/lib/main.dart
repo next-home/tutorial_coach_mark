@@ -344,8 +344,8 @@ class _MyHomePageState extends State<MyHomePage> {
         paddingFocus: 10,
         opacityShadow: 0.8, finish: () {
       print("finish");
-    }, clickTarget: (target) {
-      print(target);
+    }, clickTarget: (target, goingForward) {
+      print("goingForward: $goingForward, target: $target");
     }, clickSkip: () {
       print("skip");
     })

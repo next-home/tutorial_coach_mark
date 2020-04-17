@@ -9,7 +9,7 @@ import 'package:tutorial_coach_mark/util.dart';
 
 class TutorialCoachMarkWidget extends StatefulWidget {
   final List<TargetFocus> targets;
-  final Function(TargetFocus) clickTarget;
+  final Function(TargetFocus target, bool goingForward) clickTarget;
   final Function() finish;
   final Color colorShadow;
   final double opacityShadow;
@@ -58,8 +58,9 @@ class _TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget> {
             paddingFocus: widget.paddingFocus,
             colorShadow: widget.colorShadow,
             opacityShadow: widget.opacityShadow,
-            clickTarget: (target) {
-              if (widget.clickTarget != null) widget.clickTarget(target);
+            clickTarget: (target, goingForward) {
+              if (widget.clickTarget != null)
+                widget.clickTarget(target, goingForward);
             },
             focus: (target) {
               currentTarget = target;
