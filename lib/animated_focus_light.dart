@@ -179,7 +179,7 @@ class _AnimatedFocusLightState extends State<AnimatedFocusLight>
                           ),
                         ),
                       ),
-                      Align(
+                      /*Align(
                           alignment: Alignment.bottomCenter,
                           child: Padding(
                               padding: const EdgeInsets.all(28.0),
@@ -189,7 +189,7 @@ class _AnimatedFocusLightState extends State<AnimatedFocusLight>
                                       "/" +
                                       widget.targets.length.toString() +
                                       ")",
-                                  style:  TextStyle(color: Colors.white, fontSize: 22)))),
+                                  style:  TextStyle(color: Colors.white, fontSize: 22)))),*/
                       currentFocus > 0
                           ? Align(
                         alignment: Alignment.bottomLeft,
