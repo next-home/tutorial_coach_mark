@@ -19,6 +19,8 @@ class AnimatedFocusLight extends StatefulWidget {
   final Color colorShadow;
   final double opacityShadow;
   final Stream<void> streamTap;
+  final Stream<void> streamTapPrevious;
+  final Stream<void> streamTapNext;
 
   const AnimatedFocusLight({
     Key key,
@@ -31,6 +33,8 @@ class AnimatedFocusLight extends StatefulWidget {
     this.colorShadow = Colors.black,
     this.opacityShadow = 0.8,
     this.streamTap,
+    this.streamTapPrevious,
+    this.streamTapNext,
   }) : super(key: key);
 
   @override
@@ -108,9 +112,27 @@ class _AnimatedFocusLightState extends State<AnimatedFocusLight>
 
     WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
     widget.streamTap.listen((_) {
-      // _tapHandler();
+      _tapHandler();
+    });
+    widget.streamTapPrevious.listen((_) {
+      prevTutorial();
+    });
+    widget.streamTapNext.listen((_) {
+      nextTutorial();
     });
     super.initState();
+  }
+
+  void prevTutorial() {
+    print('prevTutorial');
+    goingForward = false;
+    _tapHandler();
+  }
+
+  void nextTutorial() {
+    print('nextTutorial');
+    goingForward = true;
+    _tapHandler();
   }
 
   TextStyle navigationStyle = TextStyle(color: Colors.white, fontSize: 16);
@@ -140,45 +162,45 @@ class _AnimatedFocusLightState extends State<AnimatedFocusLight>
                         height: double.maxFinite,
                         child: currentFocus != -1
                             ? CustomPaint(
-                          painter: widget?.targets[currentFocus]?.shape ==
-                              ShapeLightFocus.RRect
-                              ? LightPaintRect(
-                            colorShadow: widget.colorShadow,
-                            positioned: positioned,
-                            progress: progressAnimated,
-                            offset: widget.paddingFocus,
-                            target: targetPosition,
-                            radius: 15,
-                            opacityShadow: widget.opacityShadow,
-                          )
-                              : LightPaint(
-                            progressAnimated,
-                            positioned,
-                            sizeCircle,
-                            colorShadow: widget.colorShadow,
-                            opacityShadow: widget.opacityShadow,
-                          ),
-                        )
+                                painter: widget?.targets[currentFocus]?.shape ==
+                                        ShapeLightFocus.RRect
+                                    ? LightPaintRect(
+                                        colorShadow: widget.colorShadow,
+                                        positioned: positioned,
+                                        progress: progressAnimated,
+                                        offset: widget.paddingFocus,
+                                        target: targetPosition,
+                                        radius: 15,
+                                        opacityShadow: widget.opacityShadow,
+                                      )
+                                    : LightPaint(
+                                        progressAnimated,
+                                        positioned,
+                                        sizeCircle,
+                                        colorShadow: widget.colorShadow,
+                                        opacityShadow: widget.opacityShadow,
+                                      ),
+                              )
                             : Container(),
                       ),
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: InkWell(
-                          onTap: () {
-                            goingForward = true;
-                            _tapHandler();
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Text(
-                              currentFocus == widget.targets.length - 1
-                                  ? "Finish"
-                                  : "Next",
-                              style: navigationStyle,
-                            ),
-                          ),
-                        ),
-                      ),
+                      // Align(
+                      //   alignment: Alignment.bottomRight,
+                      //   child: InkWell(
+                      //     onTap: () {
+                      //       goingForward = true;
+                      //       _tapHandler();
+                      //     },
+                      //     child: Padding(
+                      //       padding: const EdgeInsets.all(20.0),
+                      //       child: Text(
+                      //         currentFocus == widget.targets.length - 1
+                      //             ? "Finish"
+                      //             : "Next",
+                      //         style: navigationStyle,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                       /*Align(
                           alignment: Alignment.bottomCenter,
                           child: Padding(
@@ -190,26 +212,26 @@ class _AnimatedFocusLightState extends State<AnimatedFocusLight>
                                       widget.targets.length.toString() +
                                       ")",
                                   style:  TextStyle(color: Colors.white, fontSize: 22)))),*/
-                      currentFocus > 0
-                          ? Align(
-                        alignment: Alignment.bottomLeft,
-                        child: InkWell(
-                          onTap: () {
-                            print("previous");
-                            // _tapHandlerPrevious();
-                            goingForward = false;
-                            _tapHandler();
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Text(
-                              "Previous",
-                              style: navigationStyle,
-                            ),
-                          ),
-                        ),
-                      )
-                          : Container()
+                      // currentFocus > 0
+                      //     ? Align(
+                      //   alignment: Alignment.bottomLeft,
+                      //   child: InkWell(
+                      //     onTap: () {
+                      //       print("previous");
+                      //       // _tapHandlerPrevious();
+                      //       goingForward = false;
+                      //       _tapHandler();
+                      //     },
+                      //     child: Padding(
+                      //       padding: const EdgeInsets.all(20.0),
+                      //       child: Text(
+                      //         "Previous",
+                      //         style: navigationStyle,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // )
+                      //     : Container()
                     ],
                   );
                 },

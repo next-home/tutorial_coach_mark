@@ -43,6 +43,8 @@ class TutorialCoachMarkWidget extends StatefulWidget {
 class _TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget> {
   StreamController _controllerFade = StreamController<double>.broadcast();
   StreamController _controllerTapChild = StreamController<void>.broadcast();
+  StreamController _controllerTapPrevious = StreamController<void>.broadcast();
+  StreamController _controllerTapNext = StreamController<void>.broadcast();
 
   TargetFocus currentTarget;
 
@@ -70,6 +72,8 @@ class _TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget> {
               _controllerFade.sink.add(0.0);
             },
             streamTap: _controllerTapChild.stream,
+            streamTapPrevious: _controllerTapPrevious.stream,
+            streamTapNext: _controllerTapNext.stream,
           ),
           _buildContents(),
           _buildSkip()
@@ -168,13 +172,81 @@ class _TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget> {
         left: left,
         child: GestureDetector(
           onTap: () {
-            _controllerTapChild.add(null);
+            // _controllerTapChild.add(null);
           },
           child: Container(
             width: weight,
             child: Padding(
               padding: const EdgeInsets.all(20.0),
-              child: i.child,
+              child: Column(
+                children: <Widget>[
+                  i.child,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: SizedBox(
+                      width: 180,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment
+                            .center, //Center Row contents horizontally,
+                        crossAxisAlignment: CrossAxisAlignment
+                            .center, //Center Row contents vertically,
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: InkWell(
+                              onTap: () {
+                                _controllerTapPrevious.add(null);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.white),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                                  child: Text(
+                                    "Previous",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: InkWell(
+                              onTap: () {
+                                _controllerTapNext.add(null);
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(left: 10),
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.white),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                                  child: Text(
+                                    "Next",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white),
+                                    // style: labelText.copyWith(color: Colors.white)),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
